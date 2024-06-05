@@ -9,6 +9,7 @@ services:
       - '6603:3306'
     environment:
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: crypto-db
 
   app:
     depends_on:
@@ -20,3 +21,16 @@ services:
       - '8080:80'
     environment:
       PMA_HOST: db
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    restart: always
+    ports:
+      - '8081:8080'  # Подразумевается, что ваше Spring-приложение слушает порт 8080
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/crypto-db
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
